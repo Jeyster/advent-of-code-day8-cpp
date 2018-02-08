@@ -37,6 +37,17 @@ void displayVector(vector<string> tab)
     cout << endl;
 }
 
+Register* findRegisterPointeurByName(vector<Register> &registers, string const &name)
+{
+    for(int i(0); i != registers.size(); ++i)
+    {
+        if(registers[i].getName() == name)
+        {
+            return &registers[i];
+        }
+    }
+}
+
 Register findRegisterByName(vector<Register> &registers, string const &name)
 {
     for(int i(0); i != registers.size(); ++i)
@@ -70,31 +81,102 @@ void createRegistersFromInput(vector<Register> &registers, vector<string> const 
     }
 }
 
-/*
-void createRegisterAndInstructionFromInput(vector<Register> &registers, vector<Instruction> &instructions, string const &input)
+void createInstructionFromString(vector<Register> &registers, vector<Instruction> &instructions, string const &input)
 {
     istringstream iss(input.c_str());
     vector<string> instructionVector(istream_iterator<string>{iss}, istream_iterator<string>());
 
     string registerName(instructionVector[0]);
     string instructionOperator(instructionVector[1]);
-    int number(instructionOperator[2]); */
-    /* TO DO */
-    /* create the instruction condition */
+    string numberStr(instructionVector[2]);
+    int number(atoi(numberStr.c_str()));
+    string conditionRegisterName(instructionVector[4]);
+    string conditionOperator(instructionVector[5]);
+    string conditionNumberStr(instructionVector[6]);
+    int conditionNumber(atoi(conditionNumberStr.c_str()));
 
-    /* Si Registre non présent dans tableau, le créer et l'ajouter */
-    /*
-    if(findRegisterByName(registers, registerName).getName() == "")
-    {
-        registers.push_back(Register(registerName));
-    }
+    Register* reg = findRegisterPointeurByName(registers, registerName);
+    Register* conditionReg = findRegisterPointeurByName(registers, conditionRegisterName);
+
+    instructions.push_back(Instruction(reg, instructionOperator, number, conditionReg, conditionOperator, conditionNumber));
 }
 
-void createRegistersFromInput(vector<Register> &registers, vector<Instruction> &instructions, vector<string> const &input)
+void createInstructionsFromInput(vector<Register> &registers, vector<Instruction> &instructions, vector<string> const &input)
 {
     for(int i(0); i != input.size(); ++i)
     {
-        createRegisterAndInstructionFromInput(registers, instructions, input[i]);
+        createInstructionFromString(registers, instructions, input[i]);
     }
 }
-*/
+
+bool convertStringIntoBool(Register* conditionReg, string const &conditionOperator, int const &conditionNumber)
+{
+    if(conditionOperator == "==")
+    {
+        return (conditionReg->getValue() == conditionNumber);
+    }
+    else if(conditionOperator == "!=")
+    {
+        return (conditionReg->getValue() != conditionNumber);
+    }
+    else if(conditionOperator == "<")
+    {
+        return (conditionReg->getValue() < conditionNumber);
+    }
+    else if(conditionOperator == ">")
+    {
+        return (conditionReg->getValue() > conditionNumber);
+    }
+    else if(conditionOperator == "<=")
+    {
+        return (conditionReg->getValue() <= conditionNumber);
+    }
+    else if(conditionOperator == ">=")
+    {
+        return (conditionReg->getValue() >= conditionNumber);
+    }
+    else
+    {
+        cout << "Erreur conversion booléen d'instruction !!!" << endl;
+        return false;
+    }
+}
+
+void executeInstructions(vector<Register> &registers, vector<Instruction> &instructions)
+{
+    for(int i(0); i != instructions.size(); ++i)
+    {
+        Instruction currentInstruction(instructions[i]);
+        Register* instructedRegister(currentInstruction.getRegister());
+        bool condition(convertStringIntoBool(currentInstruction.getConditionRegister(), currentInstruction.getConditionOperator(), currentInstruction.getConditionNumber()));
+
+        if(condition)
+        {
+            int newValue(0);
+            if(currentInstruction.getOperator() == "inc")
+            {
+                newValue = instructedRegister->getValue() + currentInstruction.getNumber();
+                instructedRegister->setValue(newValue);
+            }
+            else if(currentInstruction.getOperator() == "dec")
+            {
+                newValue = instructedRegister->getValue() - currentInstruction.getNumber();
+                instructedRegister->setValue(newValue);
+            }
+        }
+    }
+}
+
+int getMaxValueFromRegisters(vector<Register> &registers)
+{
+    int maxValue(0);
+    for(int i(0); i != registers.size(); ++i)
+    {
+        if(registers[i].getValue() > maxValue)
+        {
+            maxValue = registers[i].getValue();
+        }
+    }
+
+    return maxValue;
+}

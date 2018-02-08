@@ -12,6 +12,7 @@ class Register
         const std::string getName();
         const int getValue();
         const void display();
+        void setValue(int newValue);
 
     protected:
 

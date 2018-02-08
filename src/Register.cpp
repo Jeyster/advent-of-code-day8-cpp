@@ -17,6 +17,11 @@ const int Register::getValue()
     return this->m_value;
 }
 
+void Register::setValue(int newValue)
+{
+    this->m_value = newValue;
+}
+
 const void Register::display()
 {
     cout << "Nom du registre : " << this->m_name << endl;
