@@ -142,8 +142,10 @@ bool convertStringIntoBool(Register* conditionReg, string const &conditionOperat
     }
 }
 
-void executeInstructions(vector<Register> &registers, vector<Instruction> &instructions)
+int executeInstructions(vector<Register> &registers, vector<Instruction> &instructions)
 {
+    int maxValue(0);
+
     for(int i(0); i != instructions.size(); ++i)
     {
         Instruction currentInstruction(instructions[i]);
@@ -157,6 +159,10 @@ void executeInstructions(vector<Register> &registers, vector<Instruction> &instr
             {
                 newValue = instructedRegister->getValue() + currentInstruction.getNumber();
                 instructedRegister->setValue(newValue);
+                if(newValue > maxValue)
+                {
+                    maxValue = newValue;
+                }
             }
             else if(currentInstruction.getOperator() == "dec")
             {
@@ -165,6 +171,8 @@ void executeInstructions(vector<Register> &registers, vector<Instruction> &instr
             }
         }
     }
+
+    return maxValue;
 }
 
 int getMaxValueFromRegisters(vector<Register> &registers)

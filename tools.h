@@ -15,7 +15,7 @@ void createRegistersFromInput(std::vector<Register> &registers, std::vector<std:
 void createInstructionFromString(std::vector<Register> &registers, std::vector<Instruction> &instructions, std::string const &input);
 void createInstructionsFromInput(std::vector<Register> &registers, std::vector<Instruction> &instructions, std::vector<std::string> const &input);
 bool convertStringIntoBool(Register* conditionReg, std::string const &conditionOperator, int const &conditionNumber);
-void executeInstructions(std::vector<Register> &registers, std::vector<Instruction> &instructions);
+int executeInstructions(std::vector<Register> &registers, std::vector<Instruction> &instructions);
 int getMaxValueFromRegisters(std::vector<Register> &registers);
 
 #endif // TOOLS_H_INCLUDED

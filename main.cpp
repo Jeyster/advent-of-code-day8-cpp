@@ -15,9 +15,10 @@ int main()
     vector<Instruction> instructions;
     createRegistersFromInput(registers, input);
     createInstructionsFromInput(registers, instructions, input);
-    executeInstructions(registers, instructions);
+    int maxValue(executeInstructions(registers, instructions));
 
-    cout << endl << getMaxValueFromRegisters(registers) << endl;
+    cout << "Max value at the end : " << getMaxValueFromRegisters(registers) << endl;
+    cout << "Max value during the process : " << maxValue << endl;
 
     /* !!! DEBUG !!! */
     /*
